@@ -1,10 +1,29 @@
+import java.math.BigInteger;
+
 public final class Board {
-	Integer[][] board;
-	int xZero, yZero;
+	private Integer[][] board;
+	private int rZero, cZero;
+	
+	public int getxZero() {
+		return rZero;
+	}
+
+	public void setxZero(int xZero) {
+		this.rZero = xZero;
+	}
+
+	public int getyZero() {
+		return cZero;
+	}
+
+	public void setyZero(int yZero) {
+		this.cZero = yZero;
+	}
+
 	int size;
 
 	public Board() {
-		xZero = yZero = 0;
+		rZero = cZero = 0;
 		Integer[][] defaultBoard = {{1, 2, 3}, 
 				{4, 8, 5}, 
 				{7, 0, 6}};
@@ -29,9 +48,9 @@ public final class Board {
 		super();
 		int counter = 0;
 		if (Math.pow(((int) Math.sqrt(args.length)), 2) == args.length) {
-			for (int i = 0; i < board.length; i++) {
-				for (int j = 0; j < board[0].length; j++) {
-					setSquare(i, j, args[counter++]);
+			for (int r = 0; r < board.length; r++) {
+				for (int c = 0; c < board[0].length; c++) {
+					setSquare(r, c, args[counter++]);
 				}
 			}
 		}
@@ -40,15 +59,40 @@ public final class Board {
 
 	private final void setupBoard() {
 		size = board.length;
-		print();
-		printZero();
 		if (!isValidBoard()) {
 			System.out.println("invalid board");
 		} else {
 			System.out.println("valid board");
 		};
+		
+		// setup xZero, yZero
+		boolean foundZero = false;
+		for (int r = 0; r < board.length; r++) {
+			for (int c = 0; c < board[0].length; c++) {
+				if (board[r][c] == 0) {
+					foundZero = true;
+					rZero = c;
+					cZero = r;
+				}
+			}
+		}
+
+		if (!foundZero) {
+			try {
+				throw new Exception("Invalid board configuration");
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+		
+		printZero();
 	}
 
+	
+	/**
+	 * Length of board
+	 * @return length of board
+	 */
 	public int getSize() {
 		return size;
 	}
@@ -67,70 +111,83 @@ public final class Board {
 
 	public final void setSquare(int x, int y, int value) {
 		if (value == 0) {
-			xZero = x;
-			yZero = y;
+			rZero = x;
+			cZero = y;
 		}
-		board[x][y] = value;
+		board[y][x] = value; // because row, column == y, x. This led to bugs.
 	}
 
-	public final Integer[][] swapSquare(int x, int y) throws Exception {
+	public final Integer[][] swapSquare(int r, int c) throws Exception {
+            System.out.println("swapSquare called with r = " + r + " and c = " + c);
 		Board newBoard = copyBoard();
-		int xDiff = Math.abs(x - xZero);
-		int yDiff = Math.abs(y - yZero);
-		if (xDiff > 0 || yDiff > 0) {
+		int rDiff = Math.abs(r - rZero);
+		int cDiff = Math.abs(c - cZero);
+		System.out.println("newZero: " + r + ", " + c);
+		System.out.println("xDiff: " + rDiff);
+		System.out.println("yDiff: " + cDiff);
+		if (rDiff > 1 || cDiff > 1) {
 			throw new Exception("Tried to swap with non-adjacent square");
 		}
-		switch (xDiff) {
+		switch (rDiff) {
 		case 1:
-			if (yDiff == 0) {
-				newBoard.setSquare(xZero, yZero, getValueAtSquare(x, y));
-				newBoard.setSquare(x, y, 0); // Guaranteed to be zero
+			if (cDiff == 0) {
+				newBoard.setSquare(rZero, cZero, getValueAtSquare(r, c));
+				newBoard.setSquare(r, c, 0); // Guaranteed to be zero
 			} else {
-				throw new Exception("Invalid swap.");
+				throw new Exception("rDiff == 1 case, cDiff should be 0; Invalid swap.");
 			}
 			break;
 		case 0:
-			if (yDiff == 1) {
-				newBoard.setSquare(xZero, yZero, getValueAtSquare(x, y));
-				newBoard.setSquare(x, y, 0); // Guaranteed to be zero
+			if (cDiff == 1) {
+				newBoard.setSquare(rZero, cZero, getValueAtSquare(r, c));
+				newBoard.setSquare(r, c, 0); // Guaranteed to be zero
 			} else {
-				throw new Exception("Invalid swap.");
+				throw new Exception("rDiff == 0 case, cDiff should be 1; Invalid swap.");
 			}
 		default:
-			if (xDiff == 0 && yDiff == 0) {
+			if (rDiff == 0 && cDiff == 0) {
 				throw new Exception("Tried to swap 0 with 0");
 			} else {
 				// should never reach
 			}
 
 		}
+		System.out.println("Board in swapSquare():");
+		newBoard.print();
+		System.out.print("newZero in swapSquare:");
 		newBoard.printZero();
-		return board;
+		return newBoard.getBoard();
 	}
 
 	public final void print() {
-		for (int i = 0; i < board.length; i++) {
-			for (int j = 0; j < board[0].length; j++) {
-				System.out.print(board[i][j] + " ");
+		for (int r = 0; r < board.length; r++) {
+			for (int c = 0; c < board[0].length; c++) {
+				System.out.print(board[r][c] + " ");
 			}
 			System.out.println();
 		}
 	}
 
 	public final boolean isWon() {
-		Integer[][] wonBoard = {{1, 2, 3}, 
-				{4, 5, 6}, 
-				{7, 8, 0}};
+//		Integer[][] wonBoard = {{1, 2, 3}, 
+//				       {4, 5, 6}, 
+//				       {7, 8, 0}};
 
-		if (this.board.equals(wonBoard)) {
-			return true;
-		} else {
-			return false;
-		}
+                int counter = 1;
+                for (int r = 0; r < size; r++) {
+                    for (int c = 0; c < size; c++) {
+                        if (board[r][c] != counter) {
+                            return false;
+                        }
+                        counter = counter % (size*size);
+                    }
+                }
+                return true;
+		
 	}
 
-	private final int getValueAtSquare(int x, int y){
-		return board[x][y];
+	private final int getValueAtSquare(int r, int c){
+		return board[r][c];
 	}
 
 	private final boolean isValidBoard() {
@@ -147,7 +204,7 @@ public final class Board {
 
 					if (board[r][c] == i) {
 						flag = true;
-						r = c = size;
+						r = c = size; //breaks out of both loops
 					}
 				}
 
@@ -160,10 +217,24 @@ public final class Board {
 	}
 
 	public final void printZero() {
-		System.out.println(xZero + ", " + yZero);
+		System.out.println("Zero: " + rZero + ", " + cZero + " r,c");
 	}
 
 	public final Integer[][] getBoard() {
 		return board;
+	}
+	
+	/**
+	 * Must be unique. Concatenated string.
+	 */
+	@Override
+	public int hashCode() {
+		String code = "";
+		for (int r = 0; r < size; r++) {
+			for (int c = 0; c < size; c++) {
+				code += board[r][c] + "";
+			}
+		}
+		return new BigInteger(code).hashCode();
 	}
 }
