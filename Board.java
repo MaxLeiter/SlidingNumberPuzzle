@@ -123,8 +123,8 @@ public final class Board {
 		int rDiff = Math.abs(r - rZero);
 		int cDiff = Math.abs(c - cZero);
 		System.out.println("newZero: " + r + ", " + c);
-		System.out.println("xDiff: " + rDiff);
-		System.out.println("yDiff: " + cDiff);
+		System.out.println("rDiff: " + rDiff);
+		System.out.println("cDiff: " + cDiff);
 		if (rDiff > 1 || cDiff > 1) {
 			throw new Exception("Tried to swap with non-adjacent square");
 		}

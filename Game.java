@@ -19,16 +19,24 @@ public class Game {
 	 * @param y
 	 * @return
 	 */
-	public List<Direction> getValidMoves(Board board, int x, int y) {
-		List<Direction> possibleMoves = getPossibleMoves(board, x, y);
+        
+        // We are actually modifying the board, which means that if we try to see
+        //if both up and down are valid moves then checking up is fine, but then checking down 
+        // means the zero is trying to go from (0,1) to (2,1) which is an rdiff of 2
+        // we need to change it so that it tests the moves on separate boards 
+	public List<Direction> getValidMoves(Board board, int r, int c) {
+		List<Direction> possibleMoves = getPossibleMoves(board, r, c);
 		List<Direction> validMoves = new ArrayList<>();
 		int rZero = board.getcZero();
 		int cZero = board.getrZero();
-		int newCZero = rZero;
-		int newRZero = cZero;
+		int newCZero = cZero;
+		int newRZero = rZero;
+                
+                System.out.println("rZero, cZero at the beginning of getValidMoves: " + rZero + ", " +cZero);
 		
 		for (Direction dir : possibleMoves) {
 			Board newBoard = board;
+                        System.out.println("newRZero, newCZero in the for loop of getValidMoves: " + newRZero + ", " + newCZero);
 			switch (dir) {
 				case UP:
 					newRZero = rZero - 1;
@@ -68,7 +76,7 @@ public class Game {
 	 */
         
         //toDO: change c, r to r,c
-	public List<Direction> getPossibleMoves(Board board, int c, int r) {
+	public List<Direction> getPossibleMoves(Board board, int r, int c) {
 		int cZero = board.getcZero();
 		int rZero = board.getrZero();
 		List<Direction> result = new ArrayList<>();
