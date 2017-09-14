@@ -9,8 +9,8 @@ public class TestRunner {
 		Game game = new Game();
 		game.start();
 		System.out.print("possibleMoves: ");
-		System.out.println(game.getPossibleMoves(obj, obj.getxZero(), obj.getyZero()));
+		System.out.println(game.getPossibleMoves(obj, obj.getcZero(), obj.getrZero()));
 		System.out.print("validMoves: ");
-		System.out.println(game.getValidMoves(obj, obj.getxZero(), obj.getyZero()));
+		System.out.println(game.getValidMoves(obj, obj.getcZero(), obj.getrZero()));
 	}
 }

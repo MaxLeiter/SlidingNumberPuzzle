@@ -22,8 +22,8 @@ public class Game {
 	public List<Direction> getValidMoves(Board board, int x, int y) {
 		List<Direction> possibleMoves = getPossibleMoves(board, x, y);
 		List<Direction> validMoves = new ArrayList<>();
-		int rZero = board.getxZero();
-		int cZero = board.getyZero();
+		int rZero = board.getcZero();
+		int cZero = board.getrZero();
 		int newCZero = rZero;
 		int newRZero = cZero;
 		
@@ -62,53 +62,53 @@ public class Game {
 
 	/**
 	 * @param board
-	 * @param int x
-	 * @param int y
+	 * @param int c
+	 * @param int r
 	 * @return List of Direction's that are valid moves
 	 */
         
-        //toDO: change x, y to r,c
-	public List<Direction> getPossibleMoves(Board board, int x, int y) {
-		int xZero = board.getxZero();
-		int yZero = board.getyZero();
+        //toDO: change c, r to r,c
+	public List<Direction> getPossibleMoves(Board board, int c, int r) {
+		int cZero = board.getcZero();
+		int rZero = board.getrZero();
 		List<Direction> result = new ArrayList<>();
-		if (xZero == 0) { // left column
-			if (yZero == 0) {
+		if (cZero == 0) { // left column
+			if (rZero == 0) { //top left corner
 				result.add(Direction.DOWN);
 				result.add(Direction.RIGHT);
 				return result;
-			} else if (yZero == board.getSize() - 1) {
+			} else if (rZero == board.getSize() - 1) { // bottom left corner
 				result.add(Direction.UP);
 				result.add(Direction.RIGHT);
 				return result;		
-			} else {
+			} else { //middle rows, left column
 				result.add(Direction.UP);
 				result.add(Direction.DOWN);
 				result.add(Direction.RIGHT);
 				return result;
 			}
-		} else if (xZero == board.getSize() - 1) { // right column
-			if (yZero == 0) {
+		} else if (cZero == board.getSize() - 1) { // right column
+			if (rZero == 0) { //top right corner
 				result.add(Direction.DOWN);
 				result.add(Direction.LEFT);
 				return result;
-			} else if (yZero == board.getSize() - 1) {
+			} else if (rZero == board.getSize() - 1) { //bottom right corner
 				result.add(Direction.UP);
 				result.add(Direction.LEFT);
 				return result;		
-			} else {
+			} else { //middle rows of right column
 				result.add(Direction.UP);
 				result.add(Direction.DOWN);
 				result.add(Direction.LEFT);
 				return result;
 			}
 		} else { // not left or right
-			if (yZero == 0) { // top
+			if (rZero == 0) { // top
 				result.add(Direction.DOWN);
 				result.add(Direction.LEFT);
 				result.add(Direction.RIGHT);
 				return result;
-			} else if (yZero == board.getSize() - 1) { // bottom
+			} else if (rZero == board.getSize() - 1) { // bottom
 				result.add(Direction.UP);
 				result.add(Direction.LEFT);
 				result.add(Direction.RIGHT);

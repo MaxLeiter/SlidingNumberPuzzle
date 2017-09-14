@@ -4,20 +4,20 @@ public final class Board {
 	private Integer[][] board;
 	private int rZero, cZero;
 	
-	public int getxZero() {
-		return rZero;
-	}
-
-	public void setxZero(int xZero) {
-		this.rZero = xZero;
-	}
-
-	public int getyZero() {
+	public int getcZero() {
 		return cZero;
 	}
 
-	public void setyZero(int yZero) {
-		this.cZero = yZero;
+	public void setcZero(int cZero) {
+		this.cZero = cZero;
+	}
+
+	public int getrZero() {
+		return rZero;
+	}
+
+	public void setrZero(int rZero) {
+		this.rZero = rZero;
 	}
 
 	int size;
@@ -65,7 +65,7 @@ public final class Board {
 			System.out.println("valid board");
 		};
 		
-		// setup xZero, yZero
+		// setup rZero, cZero
 		boolean foundZero = false;
 		for (int r = 0; r < board.length; r++) {
 			for (int c = 0; c < board[0].length; c++) {
@@ -101,20 +101,20 @@ public final class Board {
 		return new Board(board.clone());
 	}
 
-	public final void setSquare(int x, int y, String value) {
+	public final void setSquare(int r, int c, String value) {
 		try {
-			setSquare(x, y, Integer.parseInt(value));
+			setSquare(r, c, Integer.parseInt(value));
 		} catch (Exception NumberFormatException) {
 			System.out.println("You dun goofed. " + value + " is not an Integer.");
 		}
 	}
 
-	public final void setSquare(int x, int y, int value) {
+	public final void setSquare(int r, int c, int value) {
 		if (value == 0) {
-			rZero = x;
-			cZero = y;
+			rZero = r;
+			cZero = c;
 		}
-		board[y][x] = value; // because row, column == y, x. This led to bugs.
+		board[r][c] = value; 
 	}
 
 	public final Integer[][] swapSquare(int r, int c) throws Exception {
@@ -129,7 +129,7 @@ public final class Board {
 			throw new Exception("Tried to swap with non-adjacent square");
 		}
 		switch (rDiff) {
-		case 1:
+		case 1: //going up or down
 			if (cDiff == 0) {
 				newBoard.setSquare(rZero, cZero, getValueAtSquare(r, c));
 				newBoard.setSquare(r, c, 0); // Guaranteed to be zero
@@ -137,7 +137,7 @@ public final class Board {
 				throw new Exception("rDiff == 1 case, cDiff should be 0; Invalid swap.");
 			}
 			break;
-		case 0:
+		case 0: //going lrft or right
 			if (cDiff == 1) {
 				newBoard.setSquare(rZero, cZero, getValueAtSquare(r, c));
 				newBoard.setSquare(r, c, 0); // Guaranteed to be zero
