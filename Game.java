@@ -27,15 +27,15 @@ public class Game {
 	public List<Direction> getValidMoves(Board board, int r, int c) {
 		List<Direction> possibleMoves = getPossibleMoves(board, r, c);
 		List<Direction> validMoves = new ArrayList<>();
-		int rZero = board.getcZero();
-		int cZero = board.getrZero();
+		int rZero = board.getrZero();
+		int cZero = board.getcZero();
 		int newCZero = cZero;
 		int newRZero = rZero;
                 
                 System.out.println("rZero, cZero at the beginning of getValidMoves: " + rZero + ", " +cZero);
 		
 		for (Direction dir : possibleMoves) {
-			Board newBoard = board;
+			Board newBoard = board.copyBoard(); //clones board
                         System.out.println("newRZero, newCZero in the for loop of getValidMoves: " + newRZero + ", " + newCZero);
 			switch (dir) {
 				case UP:

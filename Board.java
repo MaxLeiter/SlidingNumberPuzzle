@@ -21,7 +21,7 @@ public final class Board {
 	}
 
 	int size;
-
+        
 	public Board() {
 		rZero = cZero = 0;
 		Integer[][] defaultBoard = {{1, 2, 3}, 
@@ -97,7 +97,7 @@ public final class Board {
 		return size;
 	}
 
-	private final Board copyBoard() {
+	public final Board copyBoard() {
 		return new Board(board.clone());
 	}
 
