@@ -89,14 +89,14 @@ public class Game {
 				result.add(Direction.UP);
 				result.add(Direction.RIGHT);
 				return result;		
-			} else { //middle rows, left column
+			} else { // middle rows, left column
 				result.add(Direction.UP);
 				result.add(Direction.DOWN);
 				result.add(Direction.RIGHT);
 				return result;
 			}
 		} else if (cZero == board.getSize() - 1) { // right column
-			if (rZero == 0) { //top right corner
+			if (rZero == 0) { // top right corner
 				result.add(Direction.DOWN);
 				result.add(Direction.LEFT);
 				return result;
@@ -104,7 +104,7 @@ public class Game {
 				result.add(Direction.UP);
 				result.add(Direction.LEFT);
 				return result;		
-			} else { //middle rows of right column
+			} else { // middle rows of right column
 				result.add(Direction.UP);
 				result.add(Direction.DOWN);
 				result.add(Direction.LEFT);
