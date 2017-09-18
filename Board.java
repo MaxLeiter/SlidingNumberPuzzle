@@ -192,6 +192,7 @@ public final class Board {
 
 	private final boolean isValidBoard() {
 		if (board.length != board[0].length) {
+			System.out.println("Board is not valid due to mismatch in lengths");
 			return false;
 		}
 		boolean flag = false;
@@ -210,6 +211,7 @@ public final class Board {
 
 			}
 			if (flag == false) { //didn't find that number
+				System.out.println("Board is now valid due to duplicate input value.");
 				return false;
 			}
 		}
