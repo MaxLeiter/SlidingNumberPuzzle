@@ -75,7 +75,6 @@ public class Game {
 	 * @return List of Direction's that are valid moves
 	 */
         
-        //toDO: change c, r to r,c
 	public List<Direction> getPossibleMoves(Board board, int r, int c) {
 		int cZero = board.getcZero();
 		int rZero = board.getrZero();
