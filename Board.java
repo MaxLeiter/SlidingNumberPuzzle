@@ -20,9 +20,10 @@ public final class Board {
 		this.rZero = rZero;
 	}
 
-	int size;
-        
-	public Board() {
+	private int size;
+
+
+    public Board() {
 		rZero = cZero = 0;
 		Integer[][] defaultBoard = {{1, 2, 3}, 
 				{4, 8, 5}, 
@@ -88,7 +89,6 @@ public final class Board {
 		printZero();
 	}
 
-	
 	/**
 	 * Length of board
 	 * @return length of board

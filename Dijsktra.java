@@ -48,22 +48,14 @@ import edu.princeton.cs.algs4.StdOut;
  * @author Robert Sedgewick
  * @author Kevin Wayne
  */
-public class DijkstraSP {
+public class Dijsktra {
 
 	private double[] distTo;          // distTo[v] = distance  of shortest s->v path
 	private DirectedEdge[] edgeTo;    // edgeTo[v] = last edge on shortest s->v path
 	private IndexMinPQ<Double> pq;    // priority queue of vertices
 
-	/**
-	 * Computes a shortest-paths tree from the source vertex {@code s} to every
-	 * other vertex in the edge-weighted digraph {@code G}.
-	 *
-	 * @param G the edge-weighted digraph
-	 * @param s the source vertex
-	 * @throws IllegalArgumentException if an edge weight is negative
-	 * @throws IllegalArgumentException unless {@code 0 <= s < V}
-	 */
-	public DijkstraSP(EdgeWeightedDigraph G, int s) {
+
+	public Dijsktra(EdgeWeightedDigraph G, int s) {
 		for (DirectedEdge e : G.edges()) {
 			if (e.weight() < 0) {
 				throw new IllegalArgumentException("edge " + e + " has negative weight");
@@ -82,7 +74,7 @@ public class DijkstraSP {
 
 		// relax vertices in order of distance from s
 		pq = new IndexMinPQ<Double>(G.V());
-		pq.insert(s, distTo[s]);
+		pq.insert(s, cost(s));
 		while (!pq.isEmpty()) {
 			int v = pq.delMin();
 			for (DirectedEdge e : G.adj(v)) {
@@ -222,6 +214,11 @@ public class DijkstraSP {
 		}
 	}
 
+	private int cost(int s, Game game) {
+		return distTo[s] + heuristic(game.getBoard());
+	}
+
+	
 	/**
 	 * Unit tests the {@code DijkstraSP} data type.
 	 *
@@ -233,7 +230,7 @@ public class DijkstraSP {
 		int s = Integer.parseInt(args[1]);
 
 		// compute shortest paths
-		DijkstraSP sp = new DijkstraSP(G, s);
+		Dijsktra sp = new Dijsktra(G, s);
 
 		// print shortest path
 		for (int t = 0; t < G.V(); t++) {
@@ -248,5 +245,6 @@ public class DijkstraSP {
 			}
 		}
 	}
+
 
 }

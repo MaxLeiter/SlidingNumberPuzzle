@@ -2,10 +2,11 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-public class Game {
-	public HashMap<Board, Integer> states;
-	int counter = 0;
 
+public class Game {
+	public static final boolean DEBUG = true;
+	int counter = 0;
+	Board board;
 	public void start() {
 		states = new HashMap<Board, Integer>();
 
@@ -18,8 +19,7 @@ public class Game {
 	 * @param x
 	 * @param y
 	 * @return
-	 */
-        
+
         // We are actually modifying the board, which means that if we try to see
         //if both up and down are valid moves then checking up is fine, but then checking down 
         // means the zero is trying to go from (0,1) to (2,1) which is an rdiff of 2
@@ -31,9 +31,9 @@ public class Game {
 		int cZero = board.getcZero();
 		int newCZero = cZero;
 		int newRZero = rZero;
-                
+
                 System.out.println("rZero, cZero at the beginning of getValidMoves: " + rZero + ", " +cZero);
-		
+
 		for (Direction dir : possibleMoves) {
 			Board newBoard = board.copyBoard(); //clones board
                         System.out.println("newRZero, newCZero in the for loop of getValidMoves: " + newRZero + ", " + newCZero);
@@ -59,23 +59,19 @@ public class Game {
 				System.out.println("This shouldn't be hit, because getPossibleMoves prunes this.");
 				e.printStackTrace();
 			}
-			
+
 			if (!(states.containsKey(newBoard))) {
 				validMoves.add(dir);
 			}
-			
+
 		}
 		return validMoves;
 	}
-
-	/**
-	 * @param board
-	 * @param int c
-	 * @param int r
-	 * @return List of Direction's that are valid moves
 	 */
-        
+
+
 	public List<Direction> getPossibleMoves(Board board, int r, int c) {
+		this.board = board;
 		int cZero = board.getcZero();
 		int rZero = board.getrZero();
 		List<Direction> result = new ArrayList<>();
@@ -130,7 +126,16 @@ public class Game {
 		}
 	}
 
-	private enum Direction {
+
+	public static enum Direction {
 		UP, DOWN, LEFT, RIGHT;
+	}
+
+
+	public void start(AStar aStar) {
+		while (!board.isWon()) {
+			//board = aStar.next();
+		}
+		
 	}
 }
