@@ -3,25 +3,29 @@ public class AStarState implements Comparable<AStarState> {
 	private Board board;
 	private int distTo;
 	private AStarState previous;
-	
+
 	public AStarState(AStarState previous, Board board) {
 		this.board = board;
-		this.previous = previous;
-		this.distTo = previous.getDist() + AStar.cost(previous, board);
+		if (previous != null) {
+			this.previous = previous;
+			this.distTo = previous.getDist() + AStar.cost(previous, board);
+		} else {
+			this.distTo = 0;
+		}
 	}
-	
+
 	public Board getBoard() {
 		return board;
 	}
-	
+
 	public int getDist() {
 		return distTo;
 	}
-	
+
 	public AStarState getPrevious() {
 		return previous;
 	}
-	
+
 	public int getWeight() {
 		return heuristic(board) + getDist();
 	}
@@ -29,7 +33,7 @@ public class AStarState implements Comparable<AStarState> {
 	private int heuristic(Board b) {
 		Integer[][] board = b.getBoard();
 		int size = b.getSize();
-		
+
 		int count = 0;
 		for (int r = 0; r < size; r++) {
 			for (int c = 0; c < size; c++) {
