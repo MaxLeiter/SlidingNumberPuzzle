@@ -45,14 +45,22 @@ public class AStarState implements Comparable<AStarState> {
 					count += Math.abs(((num - 1) / size) - r); // row difference
 					count += Math.abs(Math.abs((num - 1)) % size - c); // column difference	
 				}
-				if (Game.DEBUG) {
+				/*if (Game.DEBUG) {
 					System.out.println("r:" + r + ", c: " + c + ", num: " + num);
 					System.out.println("count:" + count);
-				}
+				}*/
 			}
 		}
 
 		return count;
+	}
+
+	@Override
+	public boolean equals(Object other) {
+		if (other instanceof AStarState) {
+			return this.getBoard().equals(((AStarState) other).getBoard());
+		} 
+		return false;
 	}
 
 	@Override

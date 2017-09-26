@@ -1,11 +1,12 @@
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
-
-import edu.princeton.cs.algs4.MinPQ;
+import java.util.PriorityQueue;
 
 public class AStar {
-	public HashSet<Board> states;
-	private MinPQ<AStarState> pq; 
+	public HashMap<Board, AStarState> states;
+	private PriorityQueue<AStarState> pq; 
+	private int counter = 0;
 	public static void main(String[] args) {
 		Integer[][] board = {{3,2,8}, 
 				{5,1,6}, 
@@ -18,9 +19,9 @@ public class AStar {
 
 	public AStar(Board initialBoard) {
 
-		pq = new MinPQ<AStarState>();
-		states = new HashSet<Board>();
-		pq.insert(new AStarState(null, initialBoard));
+		pq = new PriorityQueue<AStarState>();
+		states = new HashMap<Board, AStarState>();
+		pq.add(new AStarState(null, initialBoard));
 		this.run();
 	}
 
@@ -36,13 +37,27 @@ public class AStar {
 
 	public void run() {
 		while (!pq.isEmpty()) {
-			AStarState prev = (AStarState) pq.delMin();
+			counter++;
+			if (counter > 10) {
+				return;
+			}
+			AStarState prev = (AStarState) pq.remove();
 			ArrayList<Board.Direction> dirs = (ArrayList<Board.Direction>) prev.getBoard().getPossibleMoves();
 			for (int i = 0; i < dirs.size(); i++) {
 				AStarState current = new AStarState(prev, new Board(prev.getBoard().moveDirection(dirs.get(i))));
+			
+				// The case where we find the same board state that already exists in the queue but we found a faster path.
+				if (states.containsKey(current.getBoard())) {
+					if (states.get(current.getBoard()).getWeight() > current.getWeight()) {
+						states.remove(current.getBoard());
+						states.put(current.getBoard(), current);
+					}
+				}
+
 				if (!current.getBoard().isWon()) {
-					if (!states.contains(current.getBoard())) {
-						pq.insert(current);
+					if (!states.containsKey(current.getBoard())) {
+						pq.add(current);
+						states.put(current.getBoard(), current);
 					}
 				} else {
 					System.out.println("It works!");
