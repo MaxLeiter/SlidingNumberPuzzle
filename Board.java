@@ -5,6 +5,8 @@ import java.util.List;
 
 public final class Board {
 	private Integer[][] board;
+	private static Integer[][] goalState;
+
 	private int rZero, cZero;
 
 	public int getcZero() {
@@ -54,6 +56,7 @@ public final class Board {
 
 	private final void setupBoard() {
 		size = board.length;
+		goalState = new Integer[size][size];
 		if (!isValidBoard()) {
 			System.out.println("invalid board: ");
 		} else {
@@ -79,6 +82,14 @@ public final class Board {
 				e.printStackTrace();
 			}
 		}
+		
+		int counter = 1;
+		for (int r = 0; r < size; r++) {
+			for (int c = 0; c < size; c++) {
+				goalState[r][c] = counter++;
+			}
+		}
+		goalState[size-1][size-1] = 0;
 	}
 
 	/**
@@ -120,8 +131,9 @@ public final class Board {
 		Board newBoard = copyBoard();
 		int r = this.rZero;
 		int c = this.cZero;
-		System.out.println("moveDirection: " + r + ", " + c + " r, c");
-		System.out.println(d);
+		//System.out.println("moveDirection: " + r + ", " + c + " r, c");
+		System.out.println("----------");
+		System.out.println("Direction: " + d);
 		switch (d) {
 		case UP:
 			r = r - 1;
@@ -142,7 +154,7 @@ public final class Board {
 		/*newBoard.setSquare(rZero, cZero, getValueAtSquare(r, c));
 		newBoard.setSquare(r, c, 0); // Guaranteed to be zero*/
 		try {
-			System.out.println("moveDirection: " + r + ", " + c + " new r, new c");
+		//	System.out.println("moveDirection: " + r + ", " + c + " new r, new c");
 			newBoard.board = newBoard.swapSquare(r, c);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
@@ -152,13 +164,13 @@ public final class Board {
 	}
 
 	public final Integer[][] swapSquare(int r, int c) throws Exception {
-		System.out.println("swapSquare called with r = " + r + " and c = " + c);
+	//	System.out.println("swapSquare called with r = " + r + " and c = " + c);
 		Board newBoard = copyBoard();
 		int rDiff = Math.abs(r - rZero);
 		int cDiff = Math.abs(c - cZero);
-		System.out.print("oldZero");
+	/*	System.out.print("oldZero");
 		this.printZero();
-		System.out.println("newZero: " + r + ", " + c);
+		System.out.println("newZero: " + r + ", " + c);*/
 		/*System.out.println("rDiff: " + rDiff);
 		System.out.println("cDiff: " + cDiff);*/
 		if (rDiff > 1 || cDiff > 1) {
@@ -188,10 +200,10 @@ public final class Board {
 			}
 
 		}
-		System.out.println("Board in swapSquare():");
-		newBoard.print();
-		System.out.print("newZero in swapSquare:");
-		newBoard.printZero();
+//		System.out.println("Board in swapSquare():");
+//		newBoard.print();
+//		System.out.print("newZero in swapSquare:");
+//		newBoard.printZero();
 		return newBoard.getBoard();
 	}
 
@@ -203,19 +215,23 @@ public final class Board {
 			System.out.println();
 		}
 	}
+	
+	public final void print(Integer[][] arr) {
+		for (int r = 0; r < arr.length; r++) {
+			for (int c = 0; c < arr[0].length; c++) {
+				System.out.print(arr[r][c] + " ");
+			}
+			System.out.println();
+		}
+	}
+
 
 	public final boolean isWon() {
-		//		Integer[][] wonBoard = {{1, 2, 3}, 
-		//				       {4, 5, 6}, 
-		//				       {7, 8, 0}};
-
-		int counter = 1;
 		for (int r = 0; r < size; r++) {
 			for (int c = 0; c < size; c++) {
-				if (board[r][c] != counter) {
+				if (board[r][c] != goalState[r][c]) {
 					return false;
 				}
-				counter = counter % (size*size);
 			}
 		}
 		return true;

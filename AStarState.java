@@ -3,7 +3,7 @@ public class AStarState implements Comparable<AStarState> {
 	private Board board;
 	private int distTo;
 	private AStarState previous;
-
+	
 	public AStarState(AStarState previous, Board board) {
 		this.board = board;
 		if (previous != null) {
@@ -67,6 +67,6 @@ public class AStarState implements Comparable<AStarState> {
 	public int compareTo(AStarState o) {
 		int a = this.getWeight();
 		int b = o.getWeight();
-		return b - a;
+		return a - b;
 	}
 }
