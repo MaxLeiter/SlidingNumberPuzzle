@@ -89,8 +89,15 @@ public final class Board {
 		return size;
 	}
 
-	public final Board copyBoard() {
-		return new Board(board.clone());
+	public Board copyBoard() {
+		Integer[][] copy = new Integer[size][size];
+		for (int r = 0; r < Board.size; r++) {
+			for (int c = 0; c < Board.size; c++) {
+				copy[r][c] = this.board[r][c];
+			}
+		}
+		return new Board(copy);
+		
 	}
 
 	public final void setSquare(int r, int c, String value) {
