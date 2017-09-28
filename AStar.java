@@ -20,6 +20,7 @@ public class AStar {
 		pq = new PriorityQueue<AStarState>();
 		states = new HashMap<Board, AStarState>();
 		AStarState initial = new AStarState(null, initialBoard);
+		// Populate PriorityQueue and HashMap
 		pq.add(initial);
 		states.put(initial.getBoard(), initial);
 		this.run();
@@ -35,10 +36,8 @@ public class AStar {
 		return 1;
 	}
 
-	int depth = 0;
 	public void run() {
 		while (!pq.isEmpty()) {
-
 			AStarState prev = (AStarState) pq.remove();
 			System.out.println("---------");
 			prev.getBoard().print();
@@ -48,7 +47,7 @@ public class AStar {
 				AStarState current = new AStarState(prev, new Board(prev.getBoard().moveDirection(dirs.get(i))));
 
 				// The case where we find the same board state that already exists in the queue but we found a faster path.
-				if (states.containsKey(current.getBoard())) {
+				if (states.containsKey(current.getBoard())) { // containsKey uses equals() in AStarState
 					if (states.get(current.getBoard()).getWeight() > current.getWeight()) {
 						states.remove(current.getBoard());
 						states.put(current.getBoard(), current);
@@ -63,14 +62,14 @@ public class AStar {
 						pq.add(current);
 						System.out.printf("Added to PQ.\nWeight: %d\nDist: %d\n", current.getWeight(), current.getDist());
 						states.put(current.getBoard(), current);
-						
+
 					}
 				} else {
 					current.getBoard().print();
 					System.out.println("It works! Moves: " + current.getDist());
 					return; 
 				}
-				
+
 			}
 		}
 	}

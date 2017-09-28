@@ -17,6 +17,9 @@ public final class Board {
 		return rZero;
 	}
 
+	/**
+	 * Size of the board.
+	 */
 	private static int size;
 
 	public Board() {
@@ -41,7 +44,7 @@ public final class Board {
 		setupBoard();
 	}
 
-	public Board(String[] args) {
+	public Board(String[] args) throws InvalidBoardException {
 		super();
 		int counter = 0;
 		if (Math.pow(((int) Math.sqrt(args.length)), 2) == args.length) {
@@ -54,14 +57,21 @@ public final class Board {
 		setupBoard();
 	}
 
+	/**
+	 * Called by constructors.
+	 * Constructs goal state, this.size, calls isValidBoard(), sets up rZero and cZero, and checks if a zero is found.
+	 */
 	private final void setupBoard() {
 		size = board.length;
 		goalState = new Integer[size][size];
+
 		if (!isValidBoard()) {
-			System.out.println("invalid board: ");
-		} else {
-			//System.out.println("valid board");
-		};
+			try {
+				throw new InvalidBoardException("Invalid board passed to setupBoard()");
+			} catch (InvalidBoardException e) {
+				e.printStackTrace();
+			}
+		}
 
 		// setup rZero, cZero
 		boolean foundZero = false;
@@ -77,12 +87,14 @@ public final class Board {
 
 		if (!foundZero) {
 			try {
-				throw new Exception("Invalid board configuration");
+				throw new InvalidBoardException("Invalid board configuration: zero not found.");
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
 		}
-		
+
+
+		// Construct goal state for use in isWon()
 		int counter = 1;
 		for (int r = 0; r < size; r++) {
 			for (int c = 0; c < size; c++) {
@@ -93,13 +105,17 @@ public final class Board {
 	}
 
 	/**
-	 * Length of board
+	 * Length of board.
 	 * @return length of board
 	 */
 	public int getSize() {
 		return size;
 	}
 
+	/**
+	 * Returns a new deep copy of this object.
+	 * @return
+	 */
 	public Board copyBoard() {
 		Integer[][] copy = new Integer[size][size];
 		for (int r = 0; r < Board.size; r++) {
@@ -108,17 +124,31 @@ public final class Board {
 			}
 		}
 		return new Board(copy);
-		
+
 	}
 
-	public final void setSquare(int r, int c, String value) {
+	/**
+	 * calls setSquare with the parsed value String. Throws 
+	 * @param row
+	 * @param column
+	 * @param String value
+	 * @throws InvalidBoardException
+	 */
+	public final void setSquare(int r, int c, String value) throws NumberFormatException {
 		try {
 			setSquare(r, c, Integer.parseInt(value));
 		} catch (Exception NumberFormatException) {
-			System.out.println("You dun goofed. " + value + " is not an Integer.");
+			throw new NumberFormatException(value + " is not an Integer.");
 		}
 	}
 
+	/**
+	 * Sets a squares value.
+	 * Updates rZero and cZero if `value` == 0
+	 * @param row
+	 * @param column
+	 * @param value
+	 */
 	public final void setSquare(int r, int c, int value) {
 		if (value == 0) {
 			rZero = r;
@@ -127,11 +157,18 @@ public final class Board {
 		board[r][c] = value; 
 	}
 
+
+	/**
+	 * Returns a new board based on `this` with the given Direction applied.
+	 * The direction is not checked to be a valid move - it's assumed the direction passed
+	 * is a result from getPossibleMoves()
+	 * @param Direction d
+	 * @return Integer[][] board
+	 */
 	public final Integer[][] moveDirection(Direction d) {
 		Board newBoard = copyBoard();
 		int r = this.rZero;
 		int c = this.cZero;
-		//System.out.println("moveDirection: " + r + ", " + c + " r, c");
 		System.out.println("----------");
 		System.out.println("Direction: " + d);
 		switch (d) {
@@ -151,30 +188,20 @@ public final class Board {
 			System.out.println("Please don't hit this");
 			break;
 		}
-		/*newBoard.setSquare(rZero, cZero, getValueAtSquare(r, c));
-		newBoard.setSquare(r, c, 0); // Guaranteed to be zero*/
 		try {
-		//	System.out.println("moveDirection: " + r + ", " + c + " new r, new c");
 			newBoard.board = newBoard.swapSquare(r, c);
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
+		} catch (InvalidMoveException e) {
 			e.printStackTrace();
 		}
 		return newBoard.getBoard();
 	}
 
-	public final Integer[][] swapSquare(int r, int c) throws Exception {
-	//	System.out.println("swapSquare called with r = " + r + " and c = " + c);
+	public final Integer[][] swapSquare(int r, int c) throws InvalidMoveException {
 		Board newBoard = copyBoard();
 		int rDiff = Math.abs(r - rZero);
 		int cDiff = Math.abs(c - cZero);
-	/*	System.out.print("oldZero");
-		this.printZero();
-		System.out.println("newZero: " + r + ", " + c);*/
-		/*System.out.println("rDiff: " + rDiff);
-		System.out.println("cDiff: " + cDiff);*/
 		if (rDiff > 1 || cDiff > 1) {
-			throw new Exception("Tried to swap with non-adjacent square");
+			throw new InvalidMoveException("Tried to swap with non-adjacent square");
 		}
 		switch (rDiff) {
 		case 1: //going up or down
@@ -182,7 +209,7 @@ public final class Board {
 				newBoard.setSquare(rZero, cZero, getValueAtSquare(r, c));
 				newBoard.setSquare(r, c, 0); // Guaranteed to be zero
 			} else {
-				throw new Exception("rDiff == " + rDiff + ", cDiff == " + cDiff);
+				throw new InvalidMoveException("rDiff == " + rDiff + ", cDiff == " + cDiff);
 			}
 			break;
 		case 0: //going left or right
@@ -190,20 +217,16 @@ public final class Board {
 				newBoard.setSquare(rZero, cZero, getValueAtSquare(r, c));
 				newBoard.setSquare(r, c, 0); // Guaranteed to be zero
 			} else {
-				throw new Exception("rDiff == " + rDiff + ", cDiff == " + cDiff);
+				throw new InvalidMoveException("rDiff == " + rDiff + ", cDiff == " + cDiff);
 			}
 		default:
 			if (rDiff == 0 && cDiff == 0) {
-				throw new Exception("Tried to swap 0 with 0");
+				throw new InvalidMoveException("Tried to swap 0 with 0");
 			} else {
 				// should never reach
 			}
 
 		}
-//		System.out.println("Board in swapSquare():");
-//		newBoard.print();
-//		System.out.print("newZero in swapSquare:");
-//		newBoard.printZero();
 		return newBoard.getBoard();
 	}
 
@@ -215,7 +238,7 @@ public final class Board {
 			System.out.println();
 		}
 	}
-	
+
 	public final void print(Integer[][] arr) {
 		for (int r = 0; r < arr.length; r++) {
 			for (int c = 0; c < arr[0].length; c++) {
@@ -257,12 +280,12 @@ public final class Board {
 
 					if (board[r][c] == i) {
 						flag = true;
-						r = c = size; //breaks out of both loops
+						r = c = size; // breaks out of both loops
 					}
 				}
 
 			}
-			if (flag == false) { //didn't find that number
+			if (flag == false) { // didn't find that number
 				System.out.println("Board is not valid due to duplicate input value.");
 				this.print();
 			}
@@ -292,6 +315,11 @@ public final class Board {
 		return new BigInteger(code).hashCode();
 	}
 
+	/**
+	 * Returns a list of valid and possible moves for the current board objet based on zero location.
+	 * @see Direction
+	 * @return List<Direction> directions
+	 */
 	public List<Direction> getPossibleMoves() {
 		int cZero = this.getcZero();
 		int rZero = this.getrZero();
@@ -351,7 +379,7 @@ public final class Board {
 	public static enum Direction {
 		UP, DOWN, LEFT, RIGHT;
 	}
-	
+
 	@Override
 	public boolean equals(Object other) {
 		if (other instanceof Board) {
@@ -360,5 +388,16 @@ public final class Board {
 		return false;
 	}
 
+	class InvalidMoveException extends Exception {
+		public InvalidMoveException(String message) {
+			super(message);
+		}
+	}
+
+	class InvalidBoardException extends Exception {
+		public InvalidBoardException(String message) {
+			super(message);
+		}
+	}
 
 }

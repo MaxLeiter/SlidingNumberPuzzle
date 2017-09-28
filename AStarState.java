@@ -3,7 +3,7 @@ public class AStarState implements Comparable<AStarState> {
 	private Board board;
 	private int distTo;
 	private AStarState previous;
-	
+
 	public AStarState(AStarState previous, Board board) {
 		this.board = board;
 		if (previous != null) {
@@ -45,10 +45,6 @@ public class AStarState implements Comparable<AStarState> {
 					count += Math.abs(((num - 1) / size) - r); // row difference
 					count += Math.abs(Math.abs((num - 1)) % size - c); // column difference	
 				}
-				/*if (Game.DEBUG) {
-					System.out.println("r:" + r + ", c: " + c + ", num: " + num);
-					System.out.println("count:" + count);
-				}*/
 			}
 		}
 
