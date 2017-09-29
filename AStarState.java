@@ -1,14 +1,16 @@
 
 public class AStarState implements Comparable<AStarState> {
 	private Board board;
+	private Board.Direction dirToHere;
 	private int distTo;
 	private AStarState previous;
 
-	public AStarState(AStarState previous, Board board) {
+	public AStarState(AStarState previous, Board board, Board.Direction d) {
 		this.board = board;
 		if (previous != null) {
 			this.previous = previous;
 			this.distTo = previous.getDist() + AStar.cost(previous, board);
+			this.dirToHere = d;
 		} else {
 			this.distTo = 0;
 		}
@@ -20,6 +22,10 @@ public class AStarState implements Comparable<AStarState> {
 
 	public int getDist() {
 		return distTo;
+	}
+
+	public Board.Direction getDirection() {
+		return this.dirToHere;
 	}
 
 	public AStarState getPrevious() {

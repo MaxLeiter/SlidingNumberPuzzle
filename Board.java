@@ -31,13 +31,6 @@ public final class Board {
 		setupBoard();
 	}
 
-	public Board(int n) {
-		super();
-		board = new Integer[n][n];
-		setupBoard();
-	}
-
-
 	public Board(Integer[][] board) {
 		super();
 		this.board = board;
