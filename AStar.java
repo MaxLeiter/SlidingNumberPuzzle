@@ -2,20 +2,12 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.PriorityQueue;
+import java.util.Stack;
 
 public class AStar {
 	public HashMap<Board, AStarState> states;
 	private PriorityQueue<AStarState> pq; 
 	private boolean verbose = false;
-	public static void main(String[] args) {
-		Integer[][] board = {{1,2,3, 4, 5}, 
-							{6, 7, 8, 9, 10 }, 
-							{11, 0, 13, 14, 15},
-							{16, 17, 18, 19, 20},
-							{21, 12, 22, 23, 24}};
-		Board b = new Board(board);
-		AStar finder = new AStar(b);
-	}
 
 	public AStar(Board initialBoard, boolean verbose) {
 		this.verbose = verbose;
@@ -25,6 +17,11 @@ public class AStar {
 		// Populate PriorityQueue and HashMap
 		pq.add(initial);
 		states.put(initial.getBoard(), initial);
+		initial.getBoard().print();
+		if (initial.getBoard().isWon()) {
+			System.out.println("Initial board is already won.");
+			return;
+		}
 		this.run();
 	}
 
@@ -46,6 +43,7 @@ public class AStar {
 	public void run() {
 		//TODO: check for unsolvable (Queue is empty, and no solution yet)
 		//		print solution path
+		Stack<AStarState> moves = new Stack<AStarState>();
 		while (!pq.isEmpty()) {
 			AStarState prev = (AStarState) pq.remove();
 
@@ -57,6 +55,11 @@ public class AStar {
 
 			ArrayList<Board.Direction> dirs = (ArrayList<Board.Direction>) prev.getBoard().getPossibleMoves();
 			for (int i = 0; i < dirs.size(); i++) {
+
+				if (verbose) {
+					System.out.println("Direction: " + dirs.get(i));
+				}
+
 				AStarState current = new AStarState(prev, new Board(prev.getBoard().moveDirection(dirs.get(i))), dirs.get(i));
 
 				// The case where we find the same board state that already exists in the queue but we found a faster path.
@@ -82,7 +85,18 @@ public class AStar {
 
 					}
 				} else {
-					current.getBoard().print();
+					AStarState rover = new AStarState(current.getPrevious(), current.getBoard(), current.getDirection());
+					while (rover.getPrevious() != null) {
+						moves.push(rover);
+						rover = rover.getPrevious();
+					}
+
+					while (!(moves.isEmpty())) {
+						AStarState popped = moves.pop();
+						System.out.println("Direction: " + popped.getDirection());
+						popped.getBoard().print();
+					}
+
 					System.out.println("It works! Moves: " + current.getDist());
 					return; 
 				}

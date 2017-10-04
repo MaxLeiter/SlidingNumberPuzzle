@@ -95,6 +95,7 @@ public final class Board {
 			}
 		}
 		goalState[size-1][size-1] = 0;
+
 	}
 
 	/**
@@ -162,8 +163,6 @@ public final class Board {
 		Board newBoard = copyBoard();
 		int r = this.rZero;
 		int c = this.cZero;
-		System.out.println("----------");
-		System.out.println("Direction: " + d);
 		switch (d) {
 		case UP:
 			r = r - 1;
