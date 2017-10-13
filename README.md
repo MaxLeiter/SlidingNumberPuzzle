@@ -1,5 +1,7 @@
-# FifteenPuzzle
+# SlidingNumberPuzzle
 A basic A* solver for the popular sliding puzzle game.
+For solving a game like this
+![this](https://sr.ht/KVOp.jpg)
 
 Compile:
 `javac *.java`
